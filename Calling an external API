@@ -1,0 +1,193 @@
+<!-- 1. Stylesheet -->
+<style>
+    
+    #main-chat-wrapper {
+        display: flex;
+        flex-direction: column;
+        background-color: #f9f9f9;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+        /* Height will be dynamically set via JS */
+        height: 400px; /* Provide an initial default height to prevent flickering during load */
+    }
+
+    h3 {
+        padding: 15px;
+        margin: 0;
+        background-color: #fff;
+        border-bottom: 1px solid #eee;
+        flex-shrink: 0;
+        text-align: center;
+        font-size: 1em;
+    }
+
+    #chat-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+    }
+
+    .chat-message {
+        margin: 10px 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .chat-message strong {
+        color: #7a3ff3;
+    }
+    
+    #input-area {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background-color: #ffffff;
+        border-top: 1px solid #eee;
+        flex-shrink: 0;
+    }
+
+    #chat-input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    #send-button {
+        width: 80px;
+        padding: 10px;
+        background-color: #7a3ff3;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #send-button:hover {
+        background-color: #622ad1;
+    }
+</style>
+
+<!-- 2. HTML Structure -->
+<div id="main-chat-wrapper">
+    <h3>It's great to have you around～</h3>
+    <div id="chat-container">
+        <p class="chat-message"><strong>EMO BOX:</strong> Hello, I'm EMO BOX. Can you tell me about your feelings?</p>
+    </div>
+    <div id="input-area">
+        <input type="text" id="chat-input" placeholder="Type your message here...">
+        <button id="send-button">Send</button>
+    </div>
+</div>
+
+
+<!-- 3. JavaScript Logic -->
+<script>
+    // --- API Call Logic (unchanged) ---
+    const DEEPSEEK_API_KEY = "sk-aabbe37ae53049cf82ef2e9deeceb41c"; 
+    const API_ENDPOINT = "https://api.deepseek.com/chat/completions";
+
+    const chatContainer = document.getElementById('chat-container');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-button');
+
+    let conversationHistory = [
+        { role: 'system', content: 'You are EMO BOX, a helpful and empathetic chatbot designed to comfort users.' }
+    ];
+
+    async function sendMessage() {
+        const userMessage = chatInput.value.trim();
+        if (!userMessage) return;
+
+        addMessageToChat('You', userMessage);
+        conversationHistory.push({ role: 'user', content: userMessage });
+
+        chatInput.value = '';
+        const thinkingMessage = addMessageToChat('EMO BOX', 'Thinking...');
+
+        try {
+            const response = await fetch(API_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+                },
+                body: JSON.stringify({
+                    "model": "deepseek-chat", 
+                    "messages": conversationHistory
+                }) 
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error.message);
+            }
+
+            const data = await response.json();
+            const aiMessage = data.choices[0].message.content;
+            conversationHistory.push({ role: 'assistant', content: aiMessage });
+            thinkingMessage.innerHTML = `<strong>EMO BOX:</strong> ${aiMessage}`;
+
+        } catch (error) {
+            console.error('DeepSeek API call failed:', error);
+            if (error.message.includes('quota') || error.message.includes('insufficient')) {
+                 thinkingMessage.innerHTML = `<strong>System:</strong> Sorry, my free quota has been used up... (Quota Exceeded)`;
+            } else {
+                 thinkingMessage.innerHTML = `<strong>System:</strong> Sorry, a connection problem occurred... (${error.message})`;
+            }
+        }
+    }
+
+    function addMessageToChat(sender, message) {
+        const messageElement = document.createElement('p');
+        messageElement.classList.add('chat-message');
+        const strong = document.createElement('strong');
+        strong.innerText = `${sender}: `;
+        messageElement.appendChild(strong);
+        messageElement.append(document.createTextNode(message));
+        chatContainer.appendChild(messageElement);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        return messageElement;
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // --- [NEW] Adaptive Height Logic ---
+    
+    // Define a function to adjust the chat component height
+    function adjustChatHeight() {
+        const chatWrapper = document.getElementById('main-chat-wrapper');
+        if (!chatWrapper) return;
+
+        // Find Softr's top and bottom navigation bars
+        // Note: These class names are guessed based on Softr's common structure, usually accurate.
+        const header = document.querySelector('header[data-block-id]');
+        const footer = document.querySelector('footer[data-block-id]');
+
+        const headerHeight = header ? header.offsetHeight : 0;
+        const footerHeight = footer ? footer.offsetHeight : 0;
+        
+        // Get the total window height
+        const windowHeight = window.innerHeight;
+
+        // Calculate available height and subtract some margin (e.g., 30px) to avoid being too tight
+        const availableHeight = windowHeight - headerHeight - footerHeight - 30;
+
+        // Set the chat component height
+        chatWrapper.style.height = `${availableHeight}px`;
+    }
+
+    // Execute height adjustment immediately after page load
+    window.addEventListener('load', adjustChatHeight);
+
+    // Execute height adjustment again when browser window size changes
+    window.addEventListener('resize', adjustChatHeight);
+
+</script>
