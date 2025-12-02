@@ -1,0 +1,576 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+/* /index.html 200
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Tree Hole - Anonymous Sharing Space</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            background-image: linear-gradient(135deg, #f5f7fa 0%, #e3edf7 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #6a89cc 0%, #4a69bd 100%);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(106, 137, 204, 0.3);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        h1 {
+            margin-bottom: 15px;
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .tree-hole-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+            border: 1px solid #eaeaea;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #4a69bd;
+            font-size: 1.1rem;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 18px;
+            border: 2px solid #eaeaea;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+            transition: all 0.3s;
+            line-height: 1.5;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #6a89cc;
+            box-shadow: 0 0 0 3px rgba(106, 137, 204, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #6a89cc 0%, #4a69bd 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(106, 137, 204, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(106, 137, 204, 0.5);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .messages-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #eaeaea;
+        }
+        
+        .messages-header {
+            background: linear-gradient(135deg, #82ccdd 0%, #60a3bc 100%);
+            color: white;
+            padding: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .message-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .message {
+            padding: 20px;
+            border-bottom: 1px solid #f1f2f6;
+            position: relative;
+            transition: all 0.3s;
+            border-radius: 10px;
+            margin: 10px;
+        }
+        
+        .message:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .message:last-child {
+            border-bottom: none;
+        }
+        
+        .message-content {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+        
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .message-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .like-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            transition: color 0.3s;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        
+        .like-btn:hover {
+            color: #e74c3c;
+            background-color: #fff5f5;
+        }
+        
+        .like-btn.liked {
+            color: #e74c3c;
+        }
+        
+        .like-icon {
+            margin-right: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .anonymous-badge {
+            background: linear-gradient(135deg, #e55039 0%, #eb2f06 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .popular-badge {
+            background: linear-gradient(135deg, #f6b93b 0%, #e58e26 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-state p {
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .tree-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #60a3bc;
+            opacity: 0.7;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            border-top: 1px solid #eaeaea;
+        }
+        
+        .resources {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eaeaea;
+        }
+        
+        .resources h3 {
+            color: #4a69bd;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .resources ul {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+        
+        .resources li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .resources li:before {
+            content: "•";
+            color: #6a89cc;
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -5px;
+        }
+        
+        .resources a {
+            color: #4a69bd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .resources a:hover {
+            color: #e55039;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .tree-hole-form {
+                padding: 20px;
+            }
+            
+            .message-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .message-actions {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mind Tree Hole</h1>
+            <p class="subtitle">A safe, anonymous space to share your feelings and find inner peace and strength</p>
+        </header>
+        
+        <section class="tree-hole-form">
+            <form id="messageForm">
+                <div class="form-group">
+                    <label for="message"><i class="fas fa-pencil-alt"></i> Write what's on your mind:</label>
+                    <textarea id="message" placeholder="Whatever you're going through today, whatever you're feeling, you can share it here... Every emotion you have is worth being heard." required></textarea>
+                </div>
+                <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Post Anonymously</button>
+            </form>
+        </section>
+        
+        <section class="messages-container">
+            <div class="messages-header">
+                <span><i class="fas fa-comments"></i> Tree Hole Messages</span>
+                <span id="messageCount">0 messages</span>
+            </div>
+            <div class="message-list" id="messageList">
+                <!-- Messages will be added dynamically via JavaScript -->
+            </div>
+        </section>
+        
+        <section class="resources">
+            <h3><i class="fas fa-hands-helping"></i> Mental Health Resources</h3>
+            <ul>
+                <li>If you're experiencing emotional distress, call the mental health hotline: <strong>1-800-273-8255</strong></li>
+                <li>Recommended reading: <a href="#">"10 Ways to Cope with Anxiety"</a></li>
+                <li>Daily mindfulness practice: <a href="#">5-Minute Breathing Meditation Guide</a></li>
+                <li>Mental health self-assessment: <a href="#">Depression and Anxiety Symptom Evaluation</a></li>
+            </ul>
+        </section>
+        
+        <footer>
+            <p>Mind Tree Hole &copy; 2023 | Anonymous Sharing, Privacy Respected | You're not alone, we're all here</p>
+        </footer>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const messageForm = document.getElementById('messageForm');
+        const messageInput = document.getElementById('message');
+        const messageList = document.getElementById('messageList');
+        const messageCount = document.getElementById('messageCount');
+        
+        // Positive sample messages in English
+        const sampleMessages = [
+            {
+                id: "1",
+                content: "Today I finally gathered the courage to see a therapist. I was a bit nervous, but the moment I spoke up, I felt a weight lift off my shoulders.",
+                timestamp: "2 hours ago",
+                likes: 5
+            },
+            {
+                id: "2", 
+                content: "Anxiety attacks are really tough, but after trying deep breathing and mindfulness exercises, I felt a bit calmer. Sharing this with others who might be struggling.",
+                timestamp: "5 hours ago",
+                likes: 8
+            },
+            {
+                id: "3",
+                content: "Work has been really stressful lately, and I've been having trouble sleeping. Last night I tried pre-sleep meditation and actually slept well! Highly recommend to fellow insomniacs.",
+                timestamp: "Yesterday",
+                likes: 12
+            },
+            {
+                id: "4",
+                content: "Sometimes I feel like I'm not good enough, but today a friend told me: 'You don't need to be perfect, just be authentic.' This gave me so much strength.",
+                timestamp: "2 days ago",
+                likes: 15
+            },
+            {
+                id: "5",
+                content: "Depression isn't a sign of weakness, it's an illness that needs treatment. If you're going through it too, please remember to seek help - you deserve care.",
+                timestamp: "3 days ago", 
+                likes: 20
+            },
+            {
+                id: "6",
+                content: "Today I helped a stranger, and seeing their grateful smile made me realize how beautiful the world can be. Small acts of kindness can bring immense joy.",
+                timestamp: "1 day ago",
+                likes: 25
+            },
+            {
+                id: "7",
+                content: "I've been keeping a gratitude journal for a month now, and I'm noticing more and more little blessings in my life. Gratitude really can change your mindset!",
+                timestamp: "4 days ago",
+                likes: 18
+            },
+            {
+                id: "8",
+                content: "Just completed a project I thought was impossible! Turns out our potential is greater than we imagine. Never underestimate yourself!",
+                timestamp: "6 hours ago",
+                likes: 30
+            },
+            {
+                id: "9",
+                content: "Today I saw an elderly couple walking hand in hand in the park, and it really touched me. This must be what true love looks like - growing old together.",
+                timestamp: "3 hours ago",
+                likes: 22
+            },
+            {
+                id: "10",
+                content: "Put my phone aside and had a proper meal with my family, talking about everything. This real connection is more satisfying than any social media likes.",
+                timestamp: "1 day ago",
+                likes: 28
+            }
+        ];
+        
+        // Load messages and likes from local storage
+        let messages = JSON.parse(localStorage.getItem('treeHoleMessages')) || sampleMessages;
+        let likedMessages = JSON.parse(localStorage.getItem('treeHoleLikedMessages')) || [];
+        
+        // Generate message ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+        
+        // Update message count
+        function updateMessageCount() {
+            messageCount.textContent = `${messages.length} messages`;
+        }
+        
+        // Render message list
+        function renderMessages() {
+            if (messages.length === 0) {
+                messageList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="tree-icon">🌳</div>
+                        <p>The tree hole is quiet now, be the first to share</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            messageList.innerHTML = '';
+            
+            // Sort by likes, showing high-rated content first
+            const sortedMessages = [...messages].sort((a, b) => (b.likes || 0) - (a.likes || 0));
+            
+            sortedMessages.forEach((message) => {
+                const isLiked = likedMessages.includes(message.id);
+                const isPopular = message.likes > 15;
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message';
+                messageElement.innerHTML = `
+                    <div class="message-content">${message.content}</div>
+                    <div class="message-meta">
+                        <div>
+                            <span class="anonymous-badge"><i class="fas fa-user-secret"></i> Anonymous</span>
+                            ${isPopular ? '<span class="popular-badge"><i class="fas fa-fire"></i> Popular</span>' : ''}
+                        </div>
+                        <div class="message-actions">
+                            <button class="like-btn ${isLiked ? 'liked' : ''}" data-id="${message.id}">
+                                <span class="like-icon">${isLiked ? '❤️' : '🤍'}</span>
+                                <span class="like-count">${message.likes || 0}</span>
+                            </button>
+                            <span style="margin-left: 15px;">${message.timestamp}</span>
+                        </div>
+                    </div>
+                `;
+                messageList.appendChild(messageElement);
+            });
+            
+            // Add event listeners for like buttons
+            document.querySelectorAll('.like-btn').forEach(button => {
+                button.addEventListener('click', handleLike);
+            });
+            
+            // Scroll to the latest message
+            messageList.scrollTop = messageList.scrollHeight;
+        }
+        
+        // Handle likes
+        function handleLike(e) {
+            const messageId = e.currentTarget.getAttribute('data-id');
+            const messageIndex = messages.findIndex(msg => msg.id === messageId);
+            
+            if (messageIndex === -1) return;
+            
+            // Check if already liked
+            const isLiked = likedMessages.includes(messageId);
+            
+            if (isLiked) {
+                // Unlike
+                messages[messageIndex].likes = (messages[messageIndex].likes || 1) - 1;
+                likedMessages = likedMessages.filter(id => id !== messageId);
+            } else {
+                // Like
+                messages[messageIndex].likes = (messages[messageIndex].likes || 0) + 1;
+                likedMessages.push(messageId);
+            }
+            
+            // Save to local storage
+            localStorage.setItem('treeHoleMessages', JSON.stringify(messages));
+            localStorage.setItem('treeHoleLikedMessages', JSON.stringify(likedMessages));
+            
+            // Re-render messages
+            renderMessages();
+        }
+        
+        // Handle form submission
+        messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const content = messageInput.value.trim();
+            if (!content) return;
+            
+            // Create new message
+            const newMessage = {
+                id: generateId(),
+                content: content,
+                timestamp: "Just now",
+                likes: 0
+            };
+            
+            // Add to message array
+            messages.unshift(newMessage);
+            
+            // Save to local storage
+            localStorage.setItem('treeHoleMessages', JSON.stringify(messages));
+            
+            // Update UI
+            renderMessages();
+            updateMessageCount();
+            
+            // Reset form
+            messageInput.value = '';
+            
+            // Show success message
+            alert('Your thoughts have been successfully shared in the tree hole! Thank you for sharing.');
+        });
+        
+        // Initialize page
+        renderMessages();
+        updateMessageCount();
+    </script>
+</body>
+</html>
